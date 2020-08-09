@@ -22,7 +22,6 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from apiclient import errors
 
 # If modifying these scopes, delete the file token.pickle.
-# SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 SCOPES = ['https://mail.google.com/']
 
 
@@ -53,26 +52,7 @@ def service_authentication():
 
     return service
 
-# def CreateMessage(sender, to, subject, message_text):
-#   """Create a message for an email.
-
-#   Args:
-#     sender: Email address of the sender.
-#     to: Email address of the receiver.
-#     subject: The subject of the email message.
-#     message_text: The text of the email message.
-
-#   Returns:
-#     An object containing a base64url encoded email object.
-#   """
-#   message = MIMEText(message_text)
-#   message['to'] = to
-#   message['from'] = sender
-#   message['subject'] = subject
-#   return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
-
-def CreateMessageWithAttachment(sender, to, subject, message_text, file_dir,
-                                filename):
+def CreateMessage(sender, to, subject, message_text):
   """Create a message for an email.
 
   Args:
@@ -80,36 +60,15 @@ def CreateMessageWithAttachment(sender, to, subject, message_text, file_dir,
     to: Email address of the receiver.
     subject: The subject of the email message.
     message_text: The text of the email message.
-    file_dir: The directory containing the file to be attached.
-    filename: The name of the file to be attached.
 
   Returns:
     An object containing a base64url encoded email object.
   """
-  message = MIMEMultipart()
+  message = MIMEText(message_text)
   message['to'] = to
   message['from'] = sender
   message['subject'] = subject
-
-  msg = MIMEText(message_text)
-  message.attach(msg)
-
-  path = os.path.join(file_dir, filename)
-  content_type, encoding = mimetypes.guess_type(path)
-
-  main_type, sub_type = content_type.split('/', 1)
-  fp = open(path, 'rb')
-  msg = MIMEBase(main_type, sub_type)
-  msg.set_payload(fp.read())
-
-  msg.add_header('Content-Disposition', 'attachment', filename=filename)
-  encoders.encode_base64(msg)
-
-  fp.close()
-
-  message.attach(msg)
-
-  return {'raw': base64.urlsafe_b64encode(bytes(message.as_string(), encoding='utf-8')).decode()}
+  return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
 
 def SendMessage(service, user_id, message):
   """Send an email message.
@@ -124,20 +83,17 @@ def SendMessage(service, user_id, message):
     Sent Message.
   """
 
-  message1 = (service.users().messages().send(userId=user_id, body=message).execute())
-  print(message1)
+  message_resp = (service.users().messages().send(userId=user_id, body=message).execute())
+  print("Sucessfull!!! ", message_resp)
 
 def main():
     sender = 'souzaharison2@gmail.com'
     to = 'souzaharison2@99app.com'
     subject = 'Harison'
     message_text = 'Olá Harison, tudo bem???'
-    file_dir = '/Users/harison.souza/Documents/teste'
-    filename = 'send_to_gmail.csv'
 
     service = service_authentication()
-    message = CreateMessageWithAttachment(sender=sender, to=to, subject=subject, message_text=message_text, file_dir=file_dir, filename=filename)
-    # message = CreateMessage(sender=sender, to=to, subject=subject, message_text=message_text)
+    message = CreateMessage(sender=sender, to=to, subject=subject, message_text=message_text)
     SendMessage(service=service, user_id='me', message=message)
 
 if __name__ == "__main__":
