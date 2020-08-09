@@ -1,0 +1,8 @@
+os
+json
+base64
+pickle
+mimetypes
+email
+google == 3.0.0
+google_auth_oauthlib == 0.4.1

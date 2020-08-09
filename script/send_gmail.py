@@ -1,20 +1,23 @@
 """Send an email message from the user's account.
 """
-import base64
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email import encoders
-import mimetypes
+
 import os
 import json
+import base64
 import pickle
 import os.path
+import mimetypes
+
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.mime.audio import MIMEAudio
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 from apiclient import errors
 
@@ -126,7 +129,7 @@ def SendMessage(service, user_id, message):
 
 def main():
     sender = 'souzaharison2@gmail.com'
-    to = 'harison.goncalves_i@99app.com'
+    to = 'souzaharison2@99app.com'
     subject = 'Harison'
     message_text = 'Olá Harison, tudo bem???'
     file_dir = '/Users/harison.souza/Documents/teste'
