@@ -1,2 +1,2 @@
 # SendEmail
-This repository send email to gmail
+This send email to gmail
